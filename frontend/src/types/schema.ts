@@ -5,7 +5,7 @@ export interface ThreatAnalysisRequest {
   text: string;
   url?: string;
   childMode: boolean;
-  networkRisk: boolean;
+  networkRisk: string;
 }
 
 export interface ThreatAnalysisResult {
@@ -15,19 +15,55 @@ export interface ThreatAnalysisResult {
   mlRiskProbability: number;
   networkRiskLevel: string;
   isChildMode: boolean;
-  threatVectors: string[];
+  threatVectors: string[]; // Array of threat vector strings
   recommendedAction: string;
-  incidentResponse: string;
+  incidentResponse: {
+    severity: string;
+    nextSteps: string[];
+  };
   incidentTimeline: Array<{
-    event: string;
     timestamp: string;
-    details: Record<string, any>;
+    eventType: string;
+    details: Record<string, unknown>; // Object with various properties
   }>;
 }
 
 export interface ImmuneSystemResponse {
-  immuneAction: string;
-  preventionPolicy: string;
+  immuneAction: {
+    mode: string;
+    actions: string[];
+  };
+  preventionPolicy: {
+    policy: string;
+    notes: string;
+  };
+}
+
+export interface PasswordCheckResponse {
+  passwordScore: number;
+  strength: string;
+  entropy: number;
+  recommendations: string[];
+  note: string;
+}
+
+export interface PortScanResult {
+  openPorts: Array<{
+    port: string;
+    service: string;
+  }>;
+  portCount: number;
+  networkRiskLevel: string;
+  note?: string;
+}
+
+export interface CodeAnalysisResponse {
+  riskLevel: string;
+  issues: Array<{
+    type: string;
+    message: string;
+    line?: number;
+  }>;
 }
 
 // Component Props Types

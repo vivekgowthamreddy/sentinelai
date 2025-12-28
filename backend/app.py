@@ -15,7 +15,8 @@ app = FastAPI(title="SentinelAI Risk Engine")
 # -------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    # Allow all localhost ports (http://localhost:ANY_PORT and http://127.0.0.1:ANY_PORT)
+    allow_origin_regex=r"http://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,15 +39,32 @@ class PasswordRequest(BaseModel):
 class NmapRequest(BaseModel):
     target: str
 
+class CodeAnalyzeRequest(BaseModel):
+    code: str
+    language: str | None = None
+
 # -------------------------
 # ROUTES
 # -------------------------
 @app.post("/immune-check")
 def immune_check(data: AnalyzeRequest):
-    return immune_controller(data.dict())
+    return immune_controller(data.model_dump())
+
+@app.post("/api/immune-check")
+def immune_check_api(data: AnalyzeRequest):
+    return immune_controller(data.model_dump())
 
 @app.post("/analyze")
 def analyze(data: AnalyzeRequest):
+    return analyze_risk(
+        data.text,
+        data.url,
+        data.network_risk,
+        data.child_mode
+    )
+
+@app.post("/api/analyze")
+def analyze_api(data: AnalyzeRequest):
     return analyze_risk(
         data.text,
         data.url,
@@ -58,11 +76,54 @@ def analyze(data: AnalyzeRequest):
 def password_check(data: PasswordRequest):
     return analyze_password(data.password)
 
+@app.post("/api/password-check")
+def password_check_api(data: PasswordRequest):
+    return analyze_password(data.password)
+
 @app.post("/network-scan")
 def network_scan(data: NmapRequest):
     scan_result = run_nmap_scan(data.target)
     scan_result["note"] = "This scan is for educational and defensive purposes only."
     return scan_result
+
+@app.post("/api/network-scan")
+def network_scan_api(data: NmapRequest):
+    scan_result = run_nmap_scan(data.target)
+    scan_result["note"] = "This scan is for educational and defensive purposes only."
+    return scan_result
+
+def _analyze_code_snippet(code: str):
+    issues = []
+    patterns = [
+        ("HardcodedSecret", ["api_key", "apikey", "secret", "password", "token"], "Possible hardcoded secret."),
+        ("EvalUsage", ["eval(", "exec("], "Use of dynamic code execution (eval/exec)."),
+        ("CommandInjection", ["os.system(", "subprocess.call(", "subprocess.Popen("], "Potential command execution path."),
+        ("InsecureDeserialization", ["pickle.loads", "yaml.load("], "Potential unsafe deserialization."),
+    ]
+    lower = code.lower()
+    for issue_type, needles, message in patterns:
+        for n in needles:
+            idx = lower.find(n)
+            if idx != -1:
+                line = code[:idx].count("\n") + 1
+                issues.append({"type": issue_type, "message": message, "line": line})
+                break
+
+    risk = "LOW"
+    if any(i["type"] in {"CommandInjection", "InsecureDeserialization", "EvalUsage"} for i in issues):
+        risk = "HIGH"
+    elif issues:
+        risk = "MEDIUM"
+
+    return {"riskLevel": risk, "issues": issues}
+
+@app.post("/code-analyze")
+def code_analyze(data: CodeAnalyzeRequest):
+    return _analyze_code_snippet(data.code)
+
+@app.post("/api/code-analyze")
+def code_analyze_api(data: CodeAnalyzeRequest):
+    return _analyze_code_snippet(data.code)
 
 @app.get("/")
 def root():

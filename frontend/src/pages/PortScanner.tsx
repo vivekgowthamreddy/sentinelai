@@ -6,7 +6,7 @@ const PortScanner = () => {
   const [target, setTarget] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [results, setResults] = useState<PortScanResult[] | null>(null);
+  const [results, setResults] = useState<PortScanResult | null>(null);
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,10 +18,11 @@ const PortScanner = () => {
       const res = await portScan(target);
       console.log('PORT SCAN API RESPONSE:', res); // DEV: Log response to verify structure
       setResults(res);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Port scan failed:', err);
+      const error = err as { message?: string };
       setError(
-        err?.message ||
+        error?.message ||
         'Unable to scan ports. Please ensure the backend is running and try again.'
       );
     } finally {
@@ -102,25 +103,19 @@ const PortScanner = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {results.length === 0 ? (
+                    {results.openPorts.length === 0 ? (
                       <tr>
                         <td colSpan={3} className="py-6 text-sm text-(--color-text-secondary)">
                           No ports returned.
                         </td>
                       </tr>
                     ) : (
-                      results.map((row, idx) => (
+                      results.openPorts.map((row, idx) => (
                         <tr key={`${row.port}-${idx}`} className="border-t border-(--color-border)">
                           <td className="py-3 text-sm text-(--color-text-primary)">{row.port}</td>
                           <td className="py-3 text-sm">
-                            <span
-                              className={
-                                row.status === 'Open'
-                                  ? 'badge badge-warning'
-                                  : 'badge badge-neutral'
-                              }
-                            >
-                              {row.status}
+                            <span className="badge badge-warning">
+                              Open
                             </span>
                           </td>
                           <td className="py-3 text-sm text-(--color-text-secondary)">

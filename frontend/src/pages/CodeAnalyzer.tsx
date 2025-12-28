@@ -33,10 +33,11 @@ const CodeAnalyzer = () => {
       const res = await codeAnalyze(code, language || undefined);
       console.log('CODE ANALYZE API RESPONSE:', res); // DEV: Log response to verify structure
       setResult(res);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Code analysis failed:', err);
+      const error = err as { message?: string };
       setError(
-        err?.message ||
+        error?.message ||
         'Unable to analyze code. Please ensure the backend is running and try again.'
       );
     } finally {
@@ -133,7 +134,7 @@ const CodeAnalyzer = () => {
                   <ul className="mt-3 space-y-2">
                     {result.issues.map((issue, idx) => (
                       <li key={idx} className="text-sm text-(--color-text-primary)">
-                        {issue}
+                        {issue.type}: {issue.message} {issue.line ? `(Line ${issue.line})` : ''}
                       </li>
                     ))}
                   </ul>

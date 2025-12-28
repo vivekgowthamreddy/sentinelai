@@ -20,7 +20,7 @@ const AnalyzerForm = ({ onAnalyze, isLoading = false }: AnalyzerFormProps) => {
             text,
             url: url || undefined,
             childMode,
-            networkRisk,
+            networkRisk: networkRisk ? 'MEDIUM' : 'LOW',
         });
     };
 

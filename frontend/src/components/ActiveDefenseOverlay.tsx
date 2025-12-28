@@ -55,26 +55,50 @@ const ActiveDefenseOverlay = ({ result }: ActiveDefenseOverlayProps) => {
                         <AlertTriangle className="w-5 h-5 text-yellow-400" />
                         Incident Response Protocol
                     </h2>
-                    <p className="text-white/90 leading-relaxed mb-4">{result?.incidentResponse || 'Follow incident response procedures'}</p>
 
-                    <div className="pt-4 border-t border-gray-700">
-                        <div className="flex items-center gap-2 mb-2">
-                            <Clock className="w-4 h-4 text-gray-400" />
-                            <p className="text-sm font-medium text-gray-300">Timeline</p>
-                        </div>
-                        <div className="space-y-2">
-                            {result?.incidentTimeline && result.incidentTimeline.length > 0 ? (
-                                result.incidentTimeline.map((item, idx) => (
+                    {/* Ultra-defensive: handle incidentResponse as object OR string */}
+                    {result?.incidentResponse ? (
+                        typeof result.incidentResponse === 'object' && 'nextSteps' in result.incidentResponse ? (
+                            <>
+                                <p className="text-white/90 font-medium mb-2">
+                                    Severity: {result.incidentResponse.severity || 'Not specified'}
+                                </p>
+                                {Array.isArray(result.incidentResponse.nextSteps) && result.incidentResponse.nextSteps.length > 0 && (
+                                    <ul className="space-y-2">
+                                        {result.incidentResponse.nextSteps.map((step: string, idx: number) => (
+                                            <li key={idx} className="text-white/80 flex items-start gap-2">
+                                                <span className="text-yellow-400 mt-1">→</span>
+                                                <span>{step}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </>
+                        ) : (
+                            <p className="text-white/90">{String(result.incidentResponse)}</p>
+                        )
+                    ) : (
+                        <p className="text-white/90">Follow incident response procedures</p>
+                    )}
+
+                    {/* Ultra-defensive: check array before mapping */}
+                    {result?.incidentTimeline && Array.isArray(result.incidentTimeline) && result.incidentTimeline.length > 0 && (
+                        <div className="pt-4 border-t border-gray-700 mt-4">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Clock className="w-4 h-4 text-gray-400" />
+                                <p className="text-sm font-medium text-gray-300">Timeline</p>
+                            </div>
+                            <div className="space-y-2">
+                                {result.incidentTimeline.map((item, idx: number) => (
                                     <div key={idx} className="text-sm text-white/80">
-                                        <span className="font-medium">{item?.event || 'Event'}</span>
+                                        <span className="font-medium">{item?.eventType || 'Event'}</span>
                                         <span className="text-gray-400 ml-2">{item?.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}</span>
+                                        {item?.details && typeof item.details === 'object' && <span className="text-gray-300 ml-2">- {JSON.stringify(item.details)}</span>}
                                     </div>
-                                ))
-                            ) : (
-                                <p className="text-sm text-gray-400">No timeline available</p>
-                            )}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Warning Message */}
