@@ -9,7 +9,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <div className="flex h-screen min-w-0">
       <Sidebar />
-      <div className="flex-1 ml-[--spacing-sidebar] min-w-0">
+      <div className="flex-1 ml-[var(--spacing-sidebar)] min-w-0">
         {children}
       </div>
     </div>
