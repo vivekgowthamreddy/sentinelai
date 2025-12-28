@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from engine.immune_controller import immune_controller
 import os
 from pathlib import Path
 
@@ -28,6 +29,10 @@ class NmapRequest(BaseModel):
 # -------------------------
 # ROUTES
 # -------------------------
+@app.post("/immune-check")
+def immune_check(data: AnalyzeRequest):
+    return immune_controller(data.dict())
+
 @app.post("/analyze")
 def analyze(data: AnalyzeRequest):
     return analyze_risk(

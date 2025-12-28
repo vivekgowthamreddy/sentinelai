@@ -1,24 +1,24 @@
+import joblib
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from pathlib import Path
 
-# Dummy training data (hackathon-safe)
-# Features: [content_score, url_score, behavior_score]
-X_train = np.array([
-    [5, 10, 5],
-    [10, 30, 25],
-    [2, 0, 1],
-    [8, 20, 15],
-    [1, 0, 0],
-    [12, 30, 30]
-])
+# Resolve path: backend/ml/scam_risk_model.pkl
+MODEL_PATH = Path(__file__).resolve().parents[1] / "ml" / "scam_risk_model.pkl"
 
-y_train = np.array([0, 1, 0, 1, 0, 1])  # 1 = scam, 0 = safe
+_model = None
 
-model = LogisticRegression()
-model.fit(X_train, y_train)
+def load_model():
+    global _model
+    if _model is None:
+        if not MODEL_PATH.exists():
+            raise FileNotFoundError(f"ML model not found at {MODEL_PATH}")
+        _model = joblib.load(MODEL_PATH)
+    return _model
 
 
-def ml_predict(features: list):
-    prob = model.predict_proba([features])[0][1]
+def ml_predict(features: list) -> float:
+    model = load_model()
+    X = np.array(features).reshape(1, -1)
+    prob = model.predict_proba(X)[0][1]  # malicious probability
     return round(float(prob), 2)
 
