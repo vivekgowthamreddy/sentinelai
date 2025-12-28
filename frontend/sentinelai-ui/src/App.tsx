@@ -3,7 +3,11 @@ import { analyze } from "./lib/api";
 import type { AnalyzeRequest, AnalyzeResponse, NetworkRisk, RiskLevel } from "./types";
 import { ActiveDefenseOverlay } from "./components/ActiveDefenseOverlay";
 import { CautionPanel } from "./components/CautionPanel";
+import { ImmuneResponseCard } from "./components/ImmuneResponseCard";
+import { IncidentTimeline } from "./components/IncidentTimeline";
 import { InputCard } from "./components/InputCard";
+import { PageHeader } from "./components/PageHeader";
+import { PostureOverview } from "./components/PostureOverview";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { VerdictCard } from "./components/VerdictCard";
@@ -56,7 +60,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
+      <div className="pointer-events-none fixed inset-0 -z-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(34,211,238,0.14),transparent_55%),radial-gradient(circle_at_85%_10%,rgba(99,102,241,0.12),transparent_50%),radial-gradient(circle_at_50%_110%,rgba(16,185,129,0.08),transparent_55%)]" />
+        <div className="absolute inset-0 opacity-[0.35] [background-image:linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:64px_64px]" />
+      </div>
       <TopBar riskLevel={riskLevel} />
 
       <main className="mx-auto grid max-w-7xl grid-cols-1 gap-0 px-0 sm:px-6 lg:grid-cols-[360px_1fr]">
@@ -70,23 +78,9 @@ export default function App() {
           />
         </div>
 
-        <section className="min-h-[calc(100vh-72px)] px-6 py-6 sm:px-0">
-          <div className="space-y-5">
-            <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <div className="text-sm font-semibold text-slate-100">AI Immune Command Center</div>
-                  <div className="mt-1 text-xs text-slate-500">
-                    UI decisions are enforced by backend response from <span className="text-slate-300">POST /analyze</span>
-                  </div>
-                </div>
-                <div className="text-xs text-slate-400">
-                  Network Risk: <span className="font-semibold text-slate-200">{form.network_risk}</span>
-                  <span className="mx-2 text-slate-600">|</span>
-                  Child Mode: <span className="font-semibold text-slate-200">{form.child_mode ? "ON" : "OFF"}</span>
-                </div>
-              </div>
-            </div>
+        <section className="min-h-[calc(100vh-60px)] px-6 py-6 sm:px-0">
+          <div className="space-y-6">
+            <PageHeader />
 
             {error ? (
               <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
@@ -94,17 +88,28 @@ export default function App() {
               </div>
             ) : null}
 
+            <PostureOverview result={lastResult} />
+
             {lastResult?.riskLevel === "MEDIUM" ? <CautionPanel result={lastResult} /> : null}
 
-            <InputCard
-              value={form}
-              onChange={setForm}
-              onRun={runAnalysis}
-              disabled={inputsDisabled}
-              loading={loading}
-            />
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div className="space-y-6">
+                <InputCard
+                  value={form}
+                  onChange={setForm}
+                  onRun={runAnalysis}
+                  disabled={inputsDisabled}
+                  loading={loading}
+                />
+              </div>
 
-            {lastResult ? <VerdictCard result={lastResult} /> : null}
+              <div className="space-y-6">
+                {lastResult ? <VerdictCard result={lastResult} /> : null}
+                {lastResult ? <ImmuneResponseCard result={lastResult} /> : null}
+              </div>
+            </div>
+
+            <IncidentTimeline result={lastResult} />
 
             <div className="lg:hidden">
               <Sidebar
