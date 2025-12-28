@@ -12,19 +12,18 @@ const PasswordCheck = () => {
 
   const scoreText = useMemo(() => {
     if (!result) return '';
-    const v = result.strengthScore;
-    const pct = v <= 1 ? Math.round(v * 100) : Math.round(v);
-    return `${pct}%`;
+    return `${result.passwordScore}%`;
   }, [result]);
 
   const badgeClass = useMemo(() => {
     if (!result) return 'badge badge-neutral';
-    switch (result.strengthLevel) {
-      case 'Strong':
+    const strength = result.strength.toUpperCase();
+    switch (strength) {
+      case 'STRONG':
         return 'badge badge-success';
-      case 'Medium':
+      case 'MEDIUM':
         return 'badge badge-warning';
-      case 'Weak':
+      case 'WEAK':
       default:
         return 'badge badge-danger';
     }
@@ -125,7 +124,7 @@ const PasswordCheck = () => {
                     Strength assessment and actionable recommendations.
                   </p>
                 </div>
-                <span className={badgeClass}>{result.strengthLevel}</span>
+                <span className={badgeClass}>{result.strength}</span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -139,43 +138,32 @@ const PasswordCheck = () => {
                   </p>
                 </div>
 
-                <div className="card p-5 sm:p-6 lg:col-span-2">
+                <div className="card p-5 sm:p-6">
                   <div className="flex items-center gap-3">
                     <ShieldCheck className="w-4 h-4 text-(--color-primary)" />
                     <h3 className="text-sm font-medium text-(--color-text-secondary)">Recommendations</h3>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-(--color-text-secondary)">Warnings</p>
-                      {result.warnings?.length ? (
-                        <ul className="mt-2 space-y-2">
-                          {result.warnings.map((w, idx) => (
-                            <li key={idx} className="text-sm text-(--color-text-primary)">
-                              {w}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="mt-2 text-sm text-(--color-text-secondary)">No warnings reported.</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <p className="text-xs text-(--color-text-secondary)">Improvements</p>
-                      {result.recommendations?.length ? (
-                        <ul className="mt-2 space-y-2">
-                          {result.recommendations.map((r, idx) => (
-                            <li key={idx} className="text-sm text-(--color-text-primary)">
-                              {r}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="mt-2 text-sm text-(--color-text-secondary)">No recommendations provided.</p>
-                      )}
-                    </div>
+                  <div className="mt-4">
+                    {result.recommendations?.length ? (
+                      <ul className="space-y-2">
+                        {result.recommendations.map((r: string, idx: number) => (
+                          <li key={idx} className="text-sm text-(--color-text-primary) flex items-start gap-2">
+                            <span className="text-(--color-primary) mt-0.5">•</span>
+                            <span>{r}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-(--color-text-secondary)">No recommendations provided.</p>
+                    )}
                   </div>
+
+                  {result.note && (
+                    <div className="mt-4 pt-4 border-t border-(--color-border)">
+                      <p className="text-xs text-(--color-text-muted)">{result.note}</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

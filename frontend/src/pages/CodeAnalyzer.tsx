@@ -31,11 +31,13 @@ const CodeAnalyzer = () => {
 
     try {
       const res = await codeAnalyze(code, language || undefined);
+      console.log('CODE ANALYZE API RESPONSE:', res); // DEV: Log response to verify structure
       setResult(res);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Code analysis failed:', err);
       setError(
-        'Unable to reach the SentinelAI API. Configure VITE_API_BASE_URL (or proxy /api) and ensure the backend is running.',
+        err?.message ||
+        'Unable to analyze code. Please ensure the backend is running and try again.'
       );
     } finally {
       setIsLoading(false);

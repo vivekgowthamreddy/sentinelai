@@ -4,107 +4,109 @@
 
 /* Custom Design Tokens */
 @theme {
-  /* Colors */
-  --color-primary: #224C98;
-  --color-primary-hover: #1C3E7D;
-  --color-primary-light: #E0EAF3;
-  --color-secondary: #91A3B0;
-  --color-secondary-light: #EDF0F2;
-  
-  --color-success: #10B981;
-  --color-warning: #F59E0B;
-  --color-error: #EF4444;
-  
-  --color-bg-subtle: #F9FAFB;
-  --color-bg-card: #F3F4F6;
-  --color-border: #E5E7EB;
-  --color-border-light: #F3F4F6;
-  
-  --color-text-primary: #111827;
-  --color-text-secondary: #6B7280;
-  --color-text-muted: #9CA3AF;
-  
-  /* Shadows */
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  
-  /* Border Radius */
-  --radius-card: 12px;
-  --radius-button: 8px;
-  --radius-input: 8px;
-  
-  /* Spacing */
-  --spacing-sidebar: 240px;
-  --spacing-topbar-height: 64px;
+    /* Colors */
+    --color-primary: #224C98;
+    --color-primary-hover: #1C3E7D;
+    --color-primary-light: #E0EAF3;
+    --color-secondary: #91A3B0;
+    --color-secondary-light: #EDF0F2;
+
+    --color-success: #10B981;
+    --color-warning: #F59E0B;
+    --color-error: #EF4444;
+
+    --color-bg-subtle: #F9FAFB;
+    --color-bg-card: #F3F4F6;
+    --color-border: #E5E7EB;
+    --color-border-light: #F3F4F6;
+
+    --color-text-primary: #111827;
+    --color-text-secondary: #6B7280;
+    --color-text-muted: #9CA3AF;
+
+    /* Shadows */
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+    /* Border Radius */
+    --radius-card: 12px;
+    --radius-button: 8px;
+    --radius-input: 8px;
+
+    /* Spacing */
+    --spacing-sidebar: 240px;
+    --spacing-topbar-height: 64px;
 }
 
 @layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: var(--color-text-primary);
-    background-color: var(--color-bg-subtle);
-  }
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: var(--color-text-primary);
+        background-color: var(--color-bg-subtle);
+    }
 
-  html, body, #root {
-    height: 100%;
-    margin: 0;
-  }
+    html,
+    body,
+    #root {
+        height: 100%;
+        margin: 0;
+    }
 }
 
 @layer components {
-  .card {
-    @apply bg-white border border-(--color-border) shadow-[--shadow-card] rounded-[--radius-card];
-  }
+    .card {
+        @apply bg-white border border-(--color-border) shadow-[--shadow-card] rounded-[--radius-card];
+    }
 
-  .card-hover {
-    @apply transition-shadow duration-150 hover:shadow-[--shadow-hover];
-  }
+    .card-hover {
+        @apply transition-shadow duration-150 hover:shadow-[--shadow-hover];
+    }
 
-  .btn-primary {
-    @apply inline-flex items-center justify-center bg-(--color-primary) hover:bg-(--color-primary-hover) text-white font-medium px-6 py-2.5 rounded-[--radius-button] transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-white;
-  }
+    .btn-primary {
+        @apply inline-flex items-center justify-center bg-(--color-primary) hover:bg-(--color-primary-hover) text-white font-medium px-6 py-2.5 rounded-[--radius-button] transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-white;
+    }
 
-  .btn-secondary {
-    @apply inline-flex items-center justify-center bg-white border border-(--color-border) text-(--color-text-primary) hover:bg-(--color-bg-subtle) font-medium px-6 py-2.5 rounded-[--radius-button] transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-white;
-  }
+    .btn-secondary {
+        @apply inline-flex items-center justify-center bg-white border border-(--color-border) text-(--color-text-primary) hover:bg-(--color-bg-subtle) font-medium px-6 py-2.5 rounded-[--radius-button] transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-white;
+    }
 
-  .input-field {
-    @apply w-full px-4 py-2.5 border border-(--color-border) rounded-[--radius-input] focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:border-transparent transition-all duration-150;
-  }
+    .input-field {
+        @apply w-full px-4 py-2.5 border border-(--color-border) rounded-[--radius-input] focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:border-transparent transition-all duration-150;
+    }
 
-  .label-text {
-    @apply block text-sm font-medium text-(--color-text-primary) mb-2;
-  }
+    .label-text {
+        @apply block text-sm font-medium text-(--color-text-primary) mb-2;
+    }
 
-  .icon-btn {
-    @apply inline-flex items-center justify-center h-10 w-10 rounded-[--radius-button] border border-(--color-border) bg-white text-(--color-text-secondary) hover:bg-(--color-bg-subtle) hover:text-(--color-text-primary) transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary);
-  }
+    .icon-btn {
+        @apply inline-flex items-center justify-center h-10 w-10 rounded-[--radius-button] border border-(--color-border) bg-white text-(--color-text-secondary) hover:bg-(--color-bg-subtle) hover:text-(--color-text-primary) transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary);
+    }
 
-  .badge {
-    @apply inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium;
-  }
+    .badge {
+        @apply inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium;
+    }
 
-  .badge-neutral {
-    @apply border-(--color-border) bg-(--color-bg-subtle) text-(--color-text-secondary);
-  }
+    .badge-neutral {
+        @apply border-(--color-border) bg-(--color-bg-subtle) text-(--color-text-secondary);
+    }
 
-  .badge-success {
-    @apply border-(--color-border) bg-white text-(--color-success);
-  }
+    .badge-success {
+        @apply border-(--color-border) bg-white text-(--color-success);
+    }
 
-  .badge-warning {
-    @apply border-(--color-border) bg-white text-(--color-warning);
-  }
+    .badge-warning {
+        @apply border-(--color-border) bg-white text-(--color-warning);
+    }
 
-  .badge-danger {
-    @apply border-(--color-border) bg-white text-(--color-error);
-  }
+    .badge-danger {
+        @apply border-(--color-border) bg-white text-(--color-error);
+    }
 }

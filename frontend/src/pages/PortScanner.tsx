@@ -16,11 +16,13 @@ const PortScanner = () => {
 
     try {
       const res = await portScan(target);
+      console.log('PORT SCAN API RESPONSE:', res); // DEV: Log response to verify structure
       setResults(res);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Port scan failed:', err);
       setError(
-        'Unable to reach the SentinelAI API. Configure VITE_API_BASE_URL (or proxy /api) and ensure the backend is running.',
+        err?.message ||
+        'Unable to scan ports. Please ensure the backend is running and try again.'
       );
     } finally {
       setIsLoading(false);

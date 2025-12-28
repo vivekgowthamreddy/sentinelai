@@ -1,0 +1,94 @@
+import { AlertTriangle, Shield, Clock } from 'lucide-react';
+import type { ThreatAnalysisResult } from '../types/schema';
+
+interface ActiveDefenseOverlayProps {
+    result: ThreatAnalysisResult;
+}
+
+const ActiveDefenseOverlay = ({ result }: ActiveDefenseOverlayProps) => {
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+            <div className="max-w-3xl mx-4 space-y-6">
+                {/* Header */}
+                <div className="text-center space-y-4">
+                    <div className="flex justify-center">
+                        <div className="relative">
+                            <Shield className="w-20 h-20 text-red-500 animate-pulse" />
+                            <AlertTriangle className="w-10 h-10 text-yellow-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                        </div>
+                    </div>
+                    <div>
+                        <h1 className="text-3xl sm:text-4xl font-bold text-red-500 mb-2">
+                            ACTIVE DEFENSE ENGAGED
+                        </h1>
+                        <p className="text-xl text-white/90">
+                            {result?.riskLevel || 'HIGH'} Risk Detected
+                        </p>
+                    </div>
+                </div>
+
+                {/* Risk Score Card */}
+                <div className="bg-red-950/50 border-2 border-red-500 rounded-lg p-6">
+                    <div className="text-center">
+                        <p className="text-sm text-red-300 mb-2">Risk Score</p>
+                        <p className="text-6xl font-bold text-red-500">{result?.globalRiskScore ?? 'N/A'}</p>
+                        <p className="text-sm text-red-300 mt-2">
+                            Confidence: {result?.confidence != null && typeof result.confidence === 'number'
+                                ? `${Math.round(result.confidence * 100)}%`
+                                : result?.confidence || 'N/A'}
+                        </p>
+                    </div>
+                </div>
+
+                {/* Recommended Action */}
+                <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-6">
+                    <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <Shield className="w-5 h-5 text-blue-400" />
+                        Recommended Action
+                    </h2>
+                    <p className="text-white/90 leading-relaxed">{result?.recommendedAction || 'Follow security protocols'}</p>
+                </div>
+
+                {/* Incident Response */}
+                <div className="bg-gray-900/80 border border-gray-700 rounded-lg p-6">
+                    <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <AlertTriangle className="w-5 h-5 text-yellow-400" />
+                        Incident Response Protocol
+                    </h2>
+                    <p className="text-white/90 leading-relaxed mb-4">{result?.incidentResponse || 'Follow incident response procedures'}</p>
+
+                    <div className="pt-4 border-t border-gray-700">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Clock className="w-4 h-4 text-gray-400" />
+                            <p className="text-sm font-medium text-gray-300">Timeline</p>
+                        </div>
+                        <div className="space-y-2">
+                            {result?.incidentTimeline && result.incidentTimeline.length > 0 ? (
+                                result.incidentTimeline.map((item, idx) => (
+                                    <div key={idx} className="text-sm text-white/80">
+                                        <span className="font-medium">{item?.event || 'Event'}</span>
+                                        <span className="text-gray-400 ml-2">{item?.timestamp ? new Date(item.timestamp).toLocaleString() : 'N/A'}</span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-sm text-gray-400">No timeline available</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Warning Message */}
+                <div className="text-center">
+                    <p className="text-sm text-red-400 font-medium">
+                        ⚠ This overlay cannot be dismissed. Follow the incident response protocol above.
+                    </p>
+                    <p className="text-xs text-gray-400 mt-2">
+                        SentinelAI Immune System has blocked further interaction to protect your security.
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ActiveDefenseOverlay;

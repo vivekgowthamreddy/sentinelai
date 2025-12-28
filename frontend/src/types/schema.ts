@@ -1,20 +1,28 @@
-import type { RiskLevel, ConfidenceLevel, SystemStatus } from './enums';
+import type { RiskLevel, SystemStatus } from './enums';
 
 // API Request/Response Types
 export interface ThreatAnalysisRequest {
-  message: string;
+  text: string;
   url?: string;
   childMode: boolean;
   networkRisk: boolean;
 }
 
 export interface ThreatAnalysisResult {
-  riskScore: number;
+  globalRiskScore: number;
   riskLevel: RiskLevel;
-  confidence: ConfidenceLevel;
+  confidence: number;
+  mlRiskProbability: number;
+  networkRiskLevel: string;
+  isChildMode: boolean;
+  threatVectors: string[];
   recommendedAction: string;
   incidentResponse: string;
-  timeline: string;
+  incidentTimeline: Array<{
+    event: string;
+    timestamp: string;
+    details: Record<string, any>;
+  }>;
 }
 
 export interface ImmuneSystemResponse {
