@@ -15,8 +15,17 @@ const InfoCard = ({ title, value, status }: InfoCardProps) => {
     }
   };
 
+  const getGlowClass = () => {
+    switch (status) {
+      case 'Active': return 'card-glow-emerald';
+      case 'Warning': return 'card-glow-amber';
+      case 'Inactive': return 'card-glow-rose';
+      default: return 'card-glow';
+    }
+  };
+
   return (
-    <div className="card p-5 sm:p-6">
+    <div className={`card p-5 sm:p-6 card-hover ${getGlowClass()}`}>
       <h3 className="text-sm font-medium text-(--color-text-secondary) mb-1.5">
         {title}
       </h3>

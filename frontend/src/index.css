@@ -4,29 +4,46 @@
 
 /* Custom Design Tokens */
 @theme {
-    /* Colors */
-    --color-primary: #224C98;
-    --color-primary-hover: #1C3E7D;
-    --color-primary-light: #E0EAF3;
-    --color-secondary: #91A3B0;
-    --color-secondary-light: #EDF0F2;
+    /* Colors - Verified Professional Cyber Dark Theme */
+    --color-primary: #3B82F6;
+    /* Electric Blue (Trust/Technology) */
+    --color-primary-hover: #2563EB;
+    /* Darker Blue */
+    --color-primary-light: #1E293B;
+    /* Slate 800 (for backgrounds) */
+
+    --color-secondary: #94A3B8;
+    /* Slate 400 (Muted text) */
+    --color-secondary-light: #334155;
+    /* Slate 700 (Borders/Accents) */
 
     --color-success: #10B981;
+    /* Emerald 500 */
     --color-warning: #F59E0B;
+    /* Amber 500 */
     --color-error: #EF4444;
+    /* Red 500 */
 
-    --color-bg-subtle: #F9FAFB;
-    --color-bg-card: #F3F4F6;
-    --color-border: #E5E7EB;
-    --color-border-light: #F3F4F6;
+    --color-bg-subtle: #0F172A;
+    /* Slate 900 (Deepest Background) */
+    --color-bg-card: #1E293B;
+    /* Slate 800 (Card Background) */
 
-    --color-text-primary: #111827;
-    --color-text-secondary: #6B7280;
-    --color-text-muted: #9CA3AF;
+    --color-border: #334155;
+    /* Slate 700 (Subtle Borders) */
+    --color-border-light: #1E293B;
+    /* Matching Card BG */
 
-    /* Shadows */
-    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --color-text-primary: #F8FAFC;
+    /* Slate 50 (High contrast text) */
+    --color-text-secondary: #94A3B8;
+    /* Slate 400 (Secondary text) */
+    --color-text-muted: #64748B;
+    /* Slate 500 (Disabled/Muted) */
+
+    /* Shadows (adjusted for dark mode) */
+    --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
 
     /* Border Radius */
     --radius-card: 12px;
@@ -51,6 +68,100 @@
         -moz-osx-font-smoothing: grayscale;
         color: var(--color-text-primary);
         background-color: var(--color-bg-subtle);
+        line-height: 1.5;
+        /* Improved readability */
+        letter-spacing: -0.011em;
+        /* Tighter, modern typography */
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-border);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-secondary);
+    }
+
+    /* Custom Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-6px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            box-shadow: 0 0 0 0px rgba(59, 130, 246, 0);
+        }
+
+        50% {
+            box-shadow: 0 0 20px 0px rgba(59, 130, 246, 0.15);
+        }
     }
 
     html,
@@ -63,35 +174,99 @@
 
 @layer components {
     .card {
-        @apply bg-white border border-(--color-border) shadow-[--shadow-card] rounded-[--radius-card];
+        @apply bg-(--color-bg-card) border border-(--color-border) shadow-[--shadow-card] rounded-[--radius-card];
+        /* Use correct BG variable */
     }
 
     .card-hover {
-        @apply transition-shadow duration-150 hover:shadow-[--shadow-hover];
+        @apply transition-all duration-300 hover:shadow-[--shadow-hover] hover:-translate-y-1;
+    }
+
+    .card-glow {
+        @apply transition-all duration-300 hover:border-(--color-primary)/50 hover:shadow-[0_0_20px_rgba(59, 130, 246, 0.15)] hover:bg-slate-800/80;
+    }
+
+    .card-glow-purple {
+        @apply transition-all duration-300 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168, 85, 247, 0.15)] hover:bg-slate-800/80;
+    }
+
+    .card-glow-cyan {
+        @apply transition-all duration-300 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6, 182, 212, 0.15)] hover:bg-slate-800/80;
+    }
+
+    .card-glow-emerald {
+        @apply transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16, 185, 129, 0.15)] hover:bg-slate-800/80;
+    }
+
+    .card-glow-amber {
+        @apply transition-all duration-300 hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(245, 158, 11, 0.15)] hover:bg-slate-800/80;
+    }
+
+    .card-glow-rose {
+        @apply transition-all duration-300 hover:border-rose-500/50 hover:shadow-[0_0_20px_rgba(244, 63, 94, 0.15)] hover:bg-slate-800/80;
+    }
+
+    /* Animation Utilities */
+    .animate-enter {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.5s ease-out forwards;
+    }
+
+    .animate-scale-in {
+        animation: scaleIn 0.3s ease-out forwards;
+    }
+
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .animate-pulse-glow {
+        animation: pulse-glow 3s ease-in-out infinite;
+    }
+
+    /* Delay utilities for staggered animations */
+    .delay-100 {
+        animation-delay: 100ms;
+    }
+
+    .delay-200 {
+        animation-delay: 200ms;
+    }
+
+    .delay-300 {
+        animation-delay: 300ms;
     }
 
     .btn-primary {
-        @apply inline-flex items-center justify-center bg-(--color-primary) hover:bg-(--color-primary-hover) text-white font-medium px-6 py-2.5 rounded-[--radius-button] transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-white;
+        @apply inline-flex items-center justify-center bg-(--color-primary) hover:bg-(--color-primary-hover) text-white font-medium px-6 py-2.5 rounded-[--radius-button] transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-(--color-bg-subtle);
     }
 
     .btn-secondary {
-        @apply inline-flex items-center justify-center bg-white border border-(--color-border) text-(--color-text-primary) hover:bg-(--color-bg-subtle) font-medium px-6 py-2.5 rounded-[--radius-button] transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-white;
+        @apply inline-flex items-center justify-center bg-(--color-bg-card) border border-(--color-border) text-(--color-text-primary) hover:bg-(--color-border-light) font-medium px-6 py-2.5 rounded-[--radius-button] transition-all duration-200 active:scale-95 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-(--color-bg-subtle);
     }
 
     .input-field {
-        @apply w-full px-4 py-2.5 border border-(--color-border) rounded-[--radius-input] focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:border-transparent transition-all duration-150;
+        @apply w-full px-4 py-3 bg-(--color-bg-subtle) border border-(--color-border) rounded-[--radius-input] text-(--color-text-primary) placeholder-(--color-text-muted) focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:border-transparent transition-all duration-200 shadow-sm;
+    }
+
+    /* Subtle focus glow for inputs */
+    .input-focus-glow:focus-within {
+        box-shadow: 0 0 0 2px var(--color-primary-light), 0 0 0 4px rgba(59, 130, 246, 0.1);
     }
 
     .label-text {
-        @apply block text-sm font-medium text-(--color-text-primary) mb-2;
+        @apply block text-sm font-medium text-(--color-text-primary) mb-2 tracking-wide;
     }
 
     .icon-btn {
-        @apply inline-flex items-center justify-center h-10 w-10 rounded-[--radius-button] border border-(--color-border) bg-white text-(--color-text-secondary) hover:bg-(--color-bg-subtle) hover:text-(--color-text-primary) transition-colors duration-150 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary);
+        @apply inline-flex items-center justify-center h-10 w-10 rounded-[--radius-button] border border-(--color-border) bg-(--color-bg-card) text-(--color-text-secondary) hover:bg-(--color-border-light) hover:text-(--color-text-primary) transition-all duration-200 active:scale-95 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary);
     }
 
     .badge {
-        @apply inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium;
+        @apply inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold tracking-wide uppercase shadow-sm;
     }
 
     .badge-neutral {
@@ -99,14 +274,17 @@
     }
 
     .badge-success {
-        @apply border-(--color-border) bg-white text-(--color-success);
+        @apply border-emerald-900/30 bg-emerald-900/10 text-emerald-400;
+        /* Adjusted for dark mode */
     }
 
     .badge-warning {
-        @apply border-(--color-border) bg-white text-(--color-warning);
+        @apply border-amber-900/30 bg-amber-900/10 text-amber-400;
+        /* Adjusted for dark mode */
     }
 
     .badge-danger {
-        @apply border-(--color-border) bg-white text-(--color-error);
+        @apply border-red-900/30 bg-red-900/10 text-red-400;
+        /* Adjusted for dark mode */
     }
 }
