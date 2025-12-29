@@ -96,10 +96,14 @@ def _analyze_code_snippet(code: str):
     issues = []
     patterns = [
         ("HardcodedSecret", ["api_key", "apikey", "secret", "password", "token"], "Possible hardcoded secret."),
-        ("EvalUsage", ["eval(", "exec("], "Use of dynamic code execution (eval/exec)."),
-        ("CommandInjection", ["os.system(", "subprocess.call(", "subprocess.Popen(", "shell=True"], "Potential command execution path."),
-        ("InsecureDeserialization", ["pickle.loads", "yaml.load("], "Potential unsafe deserialization."),
-        ("SQLInjection", ["execute(", "cursor.execute("], "Potential SQL Injection (check for parameterized queries)."),
+        ("EvalUsage", ["eval(", "exec(", "compile("], "Use of dynamic code execution (possible RCE)."),
+        ("CommandInjection", ["os.system", "subprocess.call", "subprocess.Popen", "shell=True", "spawn", "syscall"], "Potential command execution path."),
+        ("InsecureDeserialization", ["pickle.loads", "yaml.load", "unpickle"], "Potential unsafe deserialization."),
+        ("SQLInjection", ["execute(", "cursor.execute("], "Potential SQL Injection."),
+        ("ReverseShell", ["socket.socket", "ptty.spawn", "os.dup2", "/bin/sh", "/bin/bash", "nc -e"], "Potential Reverse Shell / Backdoor indicator."),
+        ("FileDestruction", ["os.remove", "os.unlink", "rmtree", "shutil.rmtree"], "Destructive file operation detected."),
+        ("NetworkSocket", ["bind(", "listen(", "connect("], "Direct network socket usage (verify authorization)."),
+        ("Obfuscation", ["base64.b64decode", "rot13", "zlib.decompress"], "Potential obfuscated payload decoding."),
     ]
     
     lines = code.split('\n')
@@ -113,11 +117,16 @@ def _analyze_code_snippet(code: str):
                     break
 
     risk = "LOW"
-    # Logic: High if Injection/Eval/Deserialization found. Medium if just Secrets.
-    high_risk_types = {"CommandInjection", "InsecureDeserialization", "EvalUsage", "SQLInjection"}
+    # Logic: High if Injection/Eval/Deserialization/Shell found. Medium if just Secrets.
+    high_risk_types = {
+        "CommandInjection", "InsecureDeserialization", "EvalUsage", "SQLInjection", 
+        "ReverseShell", "FileDestruction", "Obfuscation"
+    }
     
     if any(i["type"] in high_risk_types for i in issues):
         risk = "HIGH"
+    elif any(i["type"] == "NetworkSocket" for i in issues):
+        risk = "MEDIUM"
     elif issues:
         risk = "MEDIUM"
 

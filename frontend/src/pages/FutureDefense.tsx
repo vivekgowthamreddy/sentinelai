@@ -1,5 +1,84 @@
+import { useState, useEffect } from 'react';
+import { Shield, Zap, Bell, Lock, Cpu, Brain, Activity, AlertTriangle, CheckCircle, Search } from 'lucide-react';
 import Topbar from '../components/Topbar';
-import { Shield, Zap, Bell, Lock, Cpu, Brain } from 'lucide-react';
+
+const DemoSimulation = () => {
+    const [step, setStep] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setStep((prev) => (prev + 1) % 4);
+        }, 3000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const steps = [
+        {
+            icon: Search,
+            color: "text-cyan-400",
+            bg: "bg-cyan-500/10",
+            border: "border-cyan-500/30",
+            title: "System Scanning...",
+            desc: "Passive monitoring active. No anomalies detected."
+        },
+        {
+            icon: AlertTriangle,
+            color: "text-red-400",
+            bg: "bg-red-500/10",
+            border: "border-red-500/30",
+            title: "Threat Detected!",
+            desc: "Unauthorized shell access attempt identified in pid:4120."
+        },
+        {
+            icon: Bell,
+            color: "text-yellow-400",
+            bg: "bg-yellow-500/10",
+            border: "border-yellow-500/30",
+            title: "Awaiting Consent",
+            desc: "User informed. Waiting for authorization to neutralize..."
+        },
+        {
+            icon: CheckCircle,
+            color: "text-emerald-400",
+            bg: "bg-emerald-500/10",
+            border: "border-emerald-500/30",
+            title: "Threat Neutralized",
+            desc: "Process terminated. Security patch applied. System Secure."
+        }
+    ];
+
+    const current = steps[step];
+    const Icon = current.icon;
+
+    return (
+        <div className={`w-full max-w-md p-6 rounded-xl border ${current.border} ${current.bg} transition-all duration-500 transform scale-100`}>
+            <div className="flex flex-col items-center text-center space-y-4">
+                <div className={`p-4 rounded-full ${current.bg} border ${current.border} shadow-[0_0_30px_rgba(0,0,0,0.3)] animate-bounce-subtle`}>
+                    <Icon className={`w-10 h-10 ${current.color}`} strokeWidth={1.5} />
+                </div>
+                <div>
+                    <h3 className={`text-xl font-bold ${current.color} mb-1 transition-colors duration-300`}>
+                        {current.title}
+                    </h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                        {current.desc}
+                    </p>
+                </div>
+
+                {/* Progress Indicators */}
+                <div className="flex gap-2 mt-4">
+                    {steps.map((_, idx) => (
+                        <div
+                            key={idx}
+                            className={`h-1.5 rounded-full transition-all duration-500 ${idx === step ? `w-8 ${current.color.replace('text-', 'bg-')}` : 'w-2 bg-gray-700'
+                                }`}
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const FutureDefense = () => {
     return (
@@ -73,6 +152,23 @@ const FutureDefense = () => {
                             <p className="text-gray-400 leading-relaxed">
                                 Upon your command, it destroys the vulnerability and patches the exploit. It then provides a detailed report on precautions to harden your system against future attempts.
                             </p>
+                        </div>
+                    </div>
+
+                    {/* Dummy Demo Simulation */}
+                    <div className="mt-12 border border-gray-800 rounded-xl bg-black/40 overflow-hidden">
+                        <div className="p-4 border-b border-gray-800 bg-gray-900/50 flex items-center justify-between">
+                            <span className="text-xs font-mono text-cyan-400 flex items-center gap-2">
+                                <Activity className="w-4 h-4" /> LIVE SYSTEM SIMULATION
+                            </span>
+                            <div className="flex gap-1.5">
+                                <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                                <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+                            </div>
+                        </div>
+                        <div className="p-8 min-h-[300px] flex items-center justify-center relative">
+                            <DemoSimulation />
                         </div>
                     </div>
 
