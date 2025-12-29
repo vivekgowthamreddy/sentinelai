@@ -1,6 +1,7 @@
 from datetime import datetime
 
-def build_timeline(event_type: str, details: dict):
+
+def build_timeline(event_type: str, details: dict) -> dict:
     return {
         "timestamp": datetime.utcnow().isoformat() + "Z",
         "eventType": event_type,

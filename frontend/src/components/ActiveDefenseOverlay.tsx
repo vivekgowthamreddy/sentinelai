@@ -3,12 +3,13 @@ import type { ThreatAnalysisResult } from '../types/schema';
 
 interface ActiveDefenseOverlayProps {
     result: ThreatAnalysisResult;
+    onClose: () => void;
 }
 
-const ActiveDefenseOverlay = ({ result }: ActiveDefenseOverlayProps) => {
+const ActiveDefenseOverlay = ({ result, onClose }: ActiveDefenseOverlayProps) => {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
-            <div className="max-w-3xl mx-4 space-y-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 overflow-y-auto">
+            <div className="max-w-3xl w-full space-y-6 my-auto">
                 {/* Header */}
                 <div className="text-center space-y-4">
                     <div className="flex justify-center">
@@ -101,13 +102,21 @@ const ActiveDefenseOverlay = ({ result }: ActiveDefenseOverlayProps) => {
                     )}
                 </div>
 
-                {/* Warning Message */}
-                <div className="text-center">
+                {/* Warning Message & Actions */}
+                <div className="text-center space-y-4">
                     <p className="text-sm text-red-400 font-medium">
-                        ⚠ This overlay cannot be dismissed. Follow the incident response protocol above.
+                        ⚠ High Risk Threat Detected. Please proceed with extreme caution.
                     </p>
-                    <p className="text-xs text-gray-400 mt-2">
-                        SentinelAI Immune System has blocked further interaction to protect your security.
+
+                    <button
+                        onClick={onClose}
+                        className="px-6 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/50 rounded-lg transition-colors text-sm font-semibold uppercase tracking-wider"
+                    >
+                        I Acknowledge the Risk - Return to Analyzer
+                    </button>
+
+                    <p className="text-xs text-gray-500">
+                        SentinelAI Immune System has logged this incident.
                     </p>
                 </div>
             </div>

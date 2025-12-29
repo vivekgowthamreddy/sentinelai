@@ -33,6 +33,8 @@ model.fit(X, y)
 # ---------------------------
 # 3. Save model
 # ---------------------------
-joblib.dump(model, "backend/ml/scam_risk_model.pkl")
+from pathlib import Path
+MODEL_DIR = Path(__file__).parent
+joblib.dump(model, MODEL_DIR / "scam_risk_model.pkl")
 
 print("✅ ML model trained and saved successfully.")

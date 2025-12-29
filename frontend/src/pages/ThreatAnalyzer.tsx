@@ -59,7 +59,10 @@ const ThreatAnalyzer = () => {
             {/* Active Defense Overlay for HIGH / CRITICAL risks */}
             {result &&
                 (result.riskLevel === "High" || result.riskLevel === "Critical") && (
-                    <ActiveDefenseOverlay result={result} />
+                    <ActiveDefenseOverlay
+                        result={result}
+                        onClose={() => setResult(null)}
+                    />
                 )}
 
             <div className="h-full flex flex-col">

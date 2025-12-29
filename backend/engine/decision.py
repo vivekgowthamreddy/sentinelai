@@ -1,6 +1,6 @@
-def decide_action(score: int):
-    if score >= 80:
+def decide_action(score: int) -> str:
+    if score >= 70:
         return "IMMEDIATE_BLOCK"
-    if score >= 50:
+    if score >= 40:
         return "WARN_USER"
     return "ALLOW"

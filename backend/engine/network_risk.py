@@ -1,6 +1,7 @@
-def network_risk_score(network_risk_level: str):
-    if network_risk_level == "HIGH":
-        return 30
-    if network_risk_level == "MEDIUM":
-        return 15
-    return 0
+def network_risk_score(level: str) -> int:
+    mapping = {
+        "LOW": 0,
+        "MEDIUM": 10,
+        "HIGH": 20
+    }
+    return mapping.get(level.upper(), 0)

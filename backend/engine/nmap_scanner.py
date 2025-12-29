@@ -1,78 +1,98 @@
-import socket
-import concurrent.futures
+import subprocess
+import re
 
-# Top 20 common ports to scan for "Fast Scan" emulation
-COMMON_PORTS = {
-    20: "ftp-data", 21: "ftp", 22: "ssh", 23: "telnet", 25: "smtp",
-    53: "dns", 80: "http", 110: "pop3", 135: "msrpc", 139: "netbios-ssn",
-    143: "imap", 443: "https", 445: "microsoft-ds", 993: "imaps", 995: "pop3s",
-    1723: "pptp", 3306: "mysql", 3389: "ms-wbt-server", 5900: "vnc", 8080: "http-proxy"
-}
 
-def scan_port(target_ip, port):
+def run_nmap_scan(target: str) -> dict:
     """
-    Scans a single port on the target IP.
-    Returns the port number if open, None otherwise.
+    Runs a safe Nmap scan (no aggressive flags).
+    Designed for educational and defensive analysis only.
     """
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.settimeout(1.0)  # 1 second timeout per port
-            result = s.connect_ex((target_ip, port))
-            if result == 0:
-                return port
-    except Exception:
-        pass
-    return None
-
-def run_nmap_scan(target: str):
-    """
-    Performs a simple TCP connect scan using native Python sockets.
-    Replaces the external 'nmap' binary dependency.
-    """
-    # Clean the target (remove protocol if present)
-    target = target.replace("http://", "").replace("https://", "").split("/")[0]
 
     try:
-        # Resolve hostname to IP first
-        target_ip = socket.gethostbyname(target)
-    except socket.gaierror:
-        return {"error": f"Could not resolve hostname: {target}"}
-    except Exception as e:
-        return {"error": str(e)}
+        # Safe scan: service detection + open ports
+        command = [
+            "nmap",
+            "-sS",        # TCP SYN scan (standard)
+            "-Pn",        # Skip host discovery
+            "-T4",        # Reasonable speed
+            "--top-ports", "100",
+            target
+        ]
 
-    open_ports_list = []
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
 
-    try:
-        # Scan ports concurrently
-        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
-            future_to_port = {executor.submit(scan_port, target_ip, port): port for port in COMMON_PORTS}
-            
-            for future in concurrent.futures.as_completed(future_to_port):
-                port = future_to_port[future]
-                if future.result():
-                    open_ports_list.append({
-                        "port": f"{port}/tcp",
-                        "service": COMMON_PORTS[port]
-                    })
-        
-        # Determine risk level
-        risk_level = "LOW"
-        if len(open_ports_list) > 5:
-            risk_level = "HIGH"
-        elif len(open_ports_list) > 0:
-            risk_level = "MEDIUM"
-        
-        # Sort by port number
-        open_ports_list.sort(key=lambda x: int(x["port"].split("/")[0]))
+        output = result.stdout
+
+        open_ports = []
+        for line in output.splitlines():
+            if re.search(r"/tcp\s+open", line):
+                parts = line.split()
+                port = parts[0]
+                service = parts[-1]
+                open_ports.append({
+                    "port": port,
+                    "service": service
+                })
+
+        risk_level = (
+            "HIGH" if len(open_ports) > 10
+            else "MEDIUM" if len(open_ports) > 3
+            else "LOW"
+        )
 
         return {
-            "openPorts": open_ports_list,
-            "portCount": len(open_ports_list),
-            "networkRiskLevel": risk_level,
-            "note": "Native Python Scan (Top 20 ports)"
+            "target": target,
+            "scanStatus": "SUCCESS",
+            "openPorts": open_ports,
+            "openPortCount": len(open_ports),
+            "networkRiskLevel": risk_level
         }
 
+    except (subprocess.TimeoutExpired, FileNotFoundError) as e:
+        # FALLBACK: If nmap missing or timeout, run Python Socket Scan
+        try:
+            import socket
+            open_ports = []
+            # Scan top 20 common ports if nmap fails
+            common_ports = [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 445, 993, 995, 1723, 3306, 3389, 5900, 8080, 8443]
+            
+            for port in common_ports:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.settimeout(0.5)
+                result = sock.connect_ex((target, port))
+                if result == 0:
+                    open_ports.append({"port": str(port), "service": "unknown"})
+                sock.close()
+            
+            risk_level = (
+                "HIGH" if len(open_ports) > 5
+                else "MEDIUM" if len(open_ports) > 2
+                else "LOW"
+            )
+            
+            return {
+                "target": target,
+                "scanStatus": "SUCCESS (Fallback)",
+                "openPorts": open_ports,
+                "openPortCount": len(open_ports),
+                "networkRiskLevel": risk_level,
+                "note": "Nmap not found. Performed basic socket scan."
+            }
+        except Exception as fallback_err:
+             return {
+                "target": target,
+                "scanStatus": "TIMEOUT",
+                "message": "Scan took too long and fallback failed."
+            }
+
     except Exception as e:
         return {
-            "error": str(e)
+            "target": target,
+            "scanStatus": "ERROR",
+            "message": str(e)
         }

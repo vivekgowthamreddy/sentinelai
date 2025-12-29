@@ -1,9 +1,10 @@
 import re
 
 CHILD_RISK_TERMS = [
-    "secret", "don’t tell", "meet alone", "send photo",
-    "gift", "free game", "dm me", "whatsapp me",
-    "click this", "verification", "otp"
+    "secret", "don’t tell", "meet alone", "send photo", "address",
+    "gift", "free game", "robux", "vbucks", "skins", "battle pass",
+    "dm me", "whatsapp me", "discord", "snapchat", "telegram",
+    "click this", "verification", "otp", "parents home"
 ]
 
 def child_content_score(text: str) -> int:
