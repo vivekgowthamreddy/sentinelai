@@ -8,6 +8,7 @@ import CodeAnalyzer from './pages/CodeAnalyzer';
 import ChildSafety from './pages/ChildSafety';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import FutureDefense from './pages/FutureDefense';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/child-safety" element={<ChildSafety />} />
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/settings" element={<Settings />} />
+                    <Route path="/future-defense" element={<FutureDefense />} />
                 </Routes>
             </MainLayout>
         </BrowserRouter>

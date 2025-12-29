@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, ShieldCheck, Lock, Baby, Scan, Code2, FileBarChart, Settings } from 'lucide-react';
+import { Home, ShieldCheck, Lock, Baby, Scan, Code2, FileBarChart, Settings, Zap } from 'lucide-react';
 
 const Sidebar = () => {
     const location = useLocation();
@@ -13,6 +13,7 @@ const Sidebar = () => {
         { path: '/child-safety', label: 'Child Safety', icon: Baby },
         { path: '/reports', label: 'Reports', icon: FileBarChart },
         { path: '/settings', label: 'Settings', icon: Settings },
+        { path: '/future-defense', label: 'System Evolution', icon: Zap },
     ];
 
     const isActive = (path: string) => {
