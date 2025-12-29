@@ -97,20 +97,26 @@ def _analyze_code_snippet(code: str):
     patterns = [
         ("HardcodedSecret", ["api_key", "apikey", "secret", "password", "token"], "Possible hardcoded secret."),
         ("EvalUsage", ["eval(", "exec("], "Use of dynamic code execution (eval/exec)."),
-        ("CommandInjection", ["os.system(", "subprocess.call(", "subprocess.Popen("], "Potential command execution path."),
+        ("CommandInjection", ["os.system(", "subprocess.call(", "subprocess.Popen(", "shell=True"], "Potential command execution path."),
         ("InsecureDeserialization", ["pickle.loads", "yaml.load("], "Potential unsafe deserialization."),
+        ("SQLInjection", ["execute(", "cursor.execute("], "Potential SQL Injection (check for parameterized queries)."),
     ]
-    lower = code.lower()
-    for issue_type, needles, message in patterns:
-        for n in needles:
-            idx = lower.find(n)
-            if idx != -1:
-                line = code[:idx].count("\n") + 1
-                issues.append({"type": issue_type, "message": message, "line": line})
-                break
+    
+    lines = code.split('\n')
+    for i, line in enumerate(lines):
+        lower_line = line.lower()
+        for issue_type, needles, message in patterns:
+            for n in needles:
+                if n in lower_line:
+                    # Avoid duplicates per line if multiple needles of same type match
+                    issues.append({"type": issue_type, "message": message, "line": i + 1})
+                    break
 
     risk = "LOW"
-    if any(i["type"] in {"CommandInjection", "InsecureDeserialization", "EvalUsage"} for i in issues):
+    # Logic: High if Injection/Eval/Deserialization found. Medium if just Secrets.
+    high_risk_types = {"CommandInjection", "InsecureDeserialization", "EvalUsage", "SQLInjection"}
+    
+    if any(i["type"] in high_risk_types for i in issues):
         risk = "HIGH"
     elif issues:
         risk = "MEDIUM"

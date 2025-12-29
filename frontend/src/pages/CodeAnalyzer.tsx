@@ -45,6 +45,13 @@ const CodeAnalyzer = () => {
     }
   };
 
+  const handleClear = () => {
+    setCode('');
+    setResult(null);
+    setError(null);
+    setLanguage('');
+  };
+
   return (
     <div className="h-full flex flex-col">
       <Topbar
@@ -100,13 +107,23 @@ const CodeAnalyzer = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!code.trim() || isLoading}
-            >
-              {isLoading ? 'Analyzing…' : 'Analyze Code'}
-            </button>
+            <div className="flex gap-4 mt-6">
+              <button
+                type="button"
+                onClick={handleClear}
+                className="w-1/3 px-6 py-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-lg transition-colors font-semibold"
+                disabled={isLoading}
+              >
+                Clear
+              </button>
+              <button
+                type="submit"
+                className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!code.trim() || isLoading}
+              >
+                {isLoading ? 'Analyzing…' : 'Analyze Code'}
+              </button>
+            </div>
           </form>
 
           {error && (
