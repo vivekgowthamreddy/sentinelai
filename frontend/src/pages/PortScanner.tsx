@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Topbar from '../components/Topbar';
 import { portScan, type PortScanResult } from '../api/sentinelApi';
+import FutureDefensePlan from '../components/FutureDefensePlan';
 
 const PortScanner = () => {
   const [target, setTarget] = useState('');
@@ -13,6 +14,16 @@ const PortScanner = () => {
     setIsLoading(true);
     setError(null);
     setResults(null);
+
+    // Validate target format
+    const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    const hostnameRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+    if (!ipRegex.test(target) && !hostnameRegex.test(target)) {
+      setError('Invalid target format. Please enter a valid IP address (e.g., 192.168.1.1) or hostname/domain (e.g., google.com).');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const res = await portScan(target);
@@ -106,13 +117,13 @@ const PortScanner = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Risk Level */}
                 <div className={`relative overflow-hidden rounded-xl p-6 border bg-(--color-surface) ${results.networkRiskLevel === 'HIGH' ? 'border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.15)]' :
-                    results.networkRiskLevel === 'MEDIUM' ? 'border-yellow-500/30' :
-                      'border-cyan-500/30'
+                  results.networkRiskLevel === 'MEDIUM' ? 'border-yellow-500/30' :
+                    'border-cyan-500/30'
                   }`}>
                   <div className="text-xs font-mono uppercase tracking-widest text-(--color-text-secondary) mb-2">Network Risk</div>
                   <div className={`text-4xl font-black ${results.networkRiskLevel === 'HIGH' ? 'text-red-500' :
-                      results.networkRiskLevel === 'MEDIUM' ? 'text-yellow-500' :
-                        'text-cyan-400'
+                    results.networkRiskLevel === 'MEDIUM' ? 'text-yellow-500' :
+                      'text-cyan-400'
                     }`}>
                     {results.networkRiskLevel}
                   </div>
@@ -122,7 +133,7 @@ const PortScanner = () => {
                 <div className="relative overflow-hidden rounded-xl p-6 border border-(--color-border) bg-(--color-surface)">
                   <div className="text-xs font-mono uppercase tracking-widest text-(--color-text-secondary) mb-2">Open Ports</div>
                   <div className="text-4xl font-black text-(--color-text-primary)">
-                    {results.openPorts.length} <span className="text-lg text-(--color-text-muted) font-normal">detected</span>
+                    {results.openPortCount} <span className="text-lg text-(--color-text-muted) font-normal">detected</span>
                   </div>
                 </div>
 
@@ -133,7 +144,6 @@ const PortScanner = () => {
                     <span className="w-3 h-3 rounded-full bg-(--color-primary) animate-pulse shadow-[0_0_10px_var(--color-primary)]"></span>
                     {String(results.scanStatus).toUpperCase()}
                   </div>
-                  {/* @ts-expect-error notes field might exist on fallback */}
                   {results.note && <div className="text-xs text-(--color-text-muted) mt-2">{results.note}</div>}
                 </div>
               </div>
@@ -183,6 +193,13 @@ const PortScanner = () => {
                 </div>
               </div>
 
+            </div>
+          )}
+
+          {/* Defense Plan Integration */}
+          {results && (
+            <div className="animate-slide-up delay-200">
+              <FutureDefensePlan scanResult={results} />
             </div>
           )}
 

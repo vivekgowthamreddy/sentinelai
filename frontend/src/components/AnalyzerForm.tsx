@@ -16,9 +16,16 @@ const AnalyzerForm = ({ onAnalyze, isLoading = false }: AnalyzerFormProps) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Auto-prepend https:// if URL provided but doesn't start with http:// or https://
+        let processedUrl = url.trim();
+        if (processedUrl && !processedUrl.match(/^https?:\/\//)) {
+            processedUrl = `https://${processedUrl}`;
+        }
+        
         onAnalyze({
             text,
-            url: url || undefined,
+            url: processedUrl || undefined,
             childMode,
             networkRisk: networkRisk ? 'MEDIUM' : 'LOW',
         });
@@ -77,7 +84,7 @@ const AnalyzerForm = ({ onAnalyze, isLoading = false }: AnalyzerFormProps) => {
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         className="input-field pl-11"
-                        placeholder="https://example.com"
+                        placeholder="example.com (https:// will be added automatically)"
                         disabled={isLoading}
                     />
                     <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-(--color-text-muted) group-focus-within:text-(--color-primary) transition-colors">

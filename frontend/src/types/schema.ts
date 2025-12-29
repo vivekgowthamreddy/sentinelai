@@ -48,11 +48,13 @@ export interface PasswordCheckResponse {
 }
 
 export interface PortScanResult {
+  target: string;
+  scanStatus: string;
   openPorts: Array<{
     port: string;
     service: string;
   }>;
-  portCount: number;
+  openPortCount: number;
   networkRiskLevel: string;
   note?: string;
 }

@@ -65,8 +65,8 @@ export const portScan = async (target: string) => {
   const res = await api.post("/network-scan", { target });  // ✅ Fixed endpoint
   console.log("PORT-SCAN API RESPONSE:", res.data);
   const data = res.data as Record<string, unknown>;
-  if (data && typeof data === "object" && typeof data.error === "string" && data.error) {
-    throw new Error(data.error);
+  if (data && typeof data === "object" && (typeof data.error === "string" && data.error) || (typeof data.message === "string" && data.message)) {
+    throw new Error(data.error as string || data.message as string);
   }
   if (data && typeof data === "object") {
     data.networkRiskLevel = normalizeRiskLevel(data.networkRiskLevel);

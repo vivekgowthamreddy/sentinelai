@@ -28,6 +28,7 @@ app.add_middleware(
 from engine.risk_engine import analyze_risk
 from engine.password_strength import analyze_password
 from engine.nmap_scanner import run_nmap_scan
+from engine.defense_advisor import DefenseAdvisor
 from models.schemas import AnalyzeRequest
 
 # -------------------------
@@ -38,6 +39,11 @@ class PasswordRequest(BaseModel):
 
 class NmapRequest(BaseModel):
     target: str
+
+
+class DefenseRequest(BaseModel):
+    target: str
+    openPorts: list = []  # List of {port: str, service: str}
 
 class CodeAnalyzeRequest(BaseModel):
     code: str
@@ -139,6 +145,31 @@ def code_analyze(data: CodeAnalyzeRequest):
 @app.post("/api/code-analyze")
 def code_analyze_api(data: CodeAnalyzeRequest):
     return _analyze_code_snippet(data.code)
+
+@app.post("/defense-plan")
+def defense_plan(data: DefenseRequest):
+    return DefenseAdvisor.get_recommendations(data.model_dump())
+
+@app.post("/api/defense-plan")
+def defense_plan_api(data: DefenseRequest):
+    return DefenseAdvisor.get_recommendations(data.model_dump())
+
+@app.get("/api/system-health")
+def system_health():
+    """
+    Returns simulated system health metrics for the Immune System Dashboard.
+    In a real deployment, this would use psutil.
+    """
+    # Mock data for demonstration of "Future Plan"
+    import random
+    return {
+        "status": "OPERATIONAL",
+        "cpu_load": round(random.uniform(10, 40), 1),
+        "memory_usage": round(random.uniform(30, 60), 1),
+        "active_threads": random.randint(40, 120),
+        "threats_blocked": random.randint(0, 5),
+        "last_scan": "Just now"
+    }
 
 @app.get("/")
 def root():
