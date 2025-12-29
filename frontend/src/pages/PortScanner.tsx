@@ -40,7 +40,7 @@ const PortScanner = () => {
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         <div className="max-w-5xl mx-auto space-y-6 lg:space-y-8">
-          <form onSubmit={handleScan} className="card p-4 sm:p-6 space-y-5">
+          <form onSubmit={handleScan} className="card p-4 sm:p-6 space-y-5 animate-slide-up">
             <div>
               <h2 className="text-base font-semibold text-(--color-text-primary)">Scan target</h2>
               <p className="text-sm text-(--color-text-secondary) mt-1">
@@ -76,14 +76,14 @@ const PortScanner = () => {
           </form>
 
           {error && (
-            <div className="card p-5 sm:p-6">
+            <div className="card p-5 sm:p-6 animate-scale-in">
               <h2 className="text-sm font-medium text-(--color-text-primary)">Connection required</h2>
               <p className="text-sm text-(--color-text-secondary) mt-2 leading-relaxed">{error}</p>
             </div>
           )}
 
           {results && (
-            <div className="card p-4 sm:p-6">
+            <div className="card p-4 sm:p-6 animate-scale-in delay-100">
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <h2 className="text-base font-semibold text-(--color-text-primary)">Results</h2>

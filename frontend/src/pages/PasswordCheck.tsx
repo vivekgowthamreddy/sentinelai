@@ -58,7 +58,7 @@ const PasswordCheck = () => {
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         <div className="max-w-5xl mx-auto space-y-6 lg:space-y-8">
-          <form onSubmit={handleAnalyze} className="card p-4 sm:p-6 space-y-5">
+          <form onSubmit={handleAnalyze} className="card p-4 sm:p-6 space-y-5 animate-slide-up">
             <div className="flex items-start gap-4">
               <div className="min-w-0">
                 <h2 className="text-base font-semibold text-(--color-text-primary)">Password input</h2>
@@ -109,14 +109,14 @@ const PasswordCheck = () => {
           </form>
 
           {error && (
-            <div className="card p-5 sm:p-6">
+            <div className="card p-5 sm:p-6 animate-scale-in">
               <h2 className="text-sm font-medium text-(--color-text-primary)">Connection required</h2>
               <p className="text-sm text-(--color-text-secondary) mt-2 leading-relaxed">{error}</p>
             </div>
           )}
 
           {result && (
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-4 sm:space-y-6 animate-slide-up delay-100">
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <h2 className="text-lg sm:text-xl font-semibold text-(--color-text-primary)">Results</h2>
@@ -128,7 +128,7 @@ const PasswordCheck = () => {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                <div className="card p-5 sm:p-6 border-l-4 border-l-(--color-primary)">
+                <div className="card p-5 sm:p-6 border-l-4 border-l-(--color-primary) animate-scale-in delay-200">
                   <p className="text-sm font-medium text-(--color-text-secondary)">Strength score</p>
                   <p className="mt-2 text-4xl sm:text-5xl font-semibold tracking-tight text-(--color-text-primary)">
                     {scoreText}
@@ -138,7 +138,7 @@ const PasswordCheck = () => {
                   </p>
                 </div>
 
-                <div className="card p-5 sm:p-6">
+                <div className="card p-5 sm:p-6 animate-scale-in delay-200">
                   <div className="flex items-center gap-3">
                     <ShieldCheck className="w-4 h-4 text-(--color-primary)" />
                     <h3 className="text-sm font-medium text-(--color-text-secondary)">Recommendations</h3>

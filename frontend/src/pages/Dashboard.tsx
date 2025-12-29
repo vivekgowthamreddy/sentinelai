@@ -10,7 +10,7 @@ const Dashboard = () => {
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Welcome Section */}
                     <div className="card p-8 sm:p-10 animate-slide-up bg-gradient-to-r from-(--color-bg-card) to-(--color-bg-subtle) border-l-4 border-l-(--color-primary) card-hover card-glow-purple">
-                        <h2 className="text-3xl sm:text-4xl font-bold text-(--color-text-primary) mb-3 tracking-tight">
+                        <h2 className="text-3xl sm:text-4xl font-bold mb-3 tracking-tight text-gradient-purple">
                             Welcome to SentinelAI
                         </h2>
                         <p className="text-lg text-(--color-text-secondary) font-medium">

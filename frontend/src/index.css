@@ -11,6 +11,8 @@
     /* Darker Blue */
     --color-primary-light: #1E293B;
     /* Slate 800 (for backgrounds) */
+    --color-accent: #8B5CF6;
+    /* Electric Violet */
 
     --color-secondary: #94A3B8;
     /* Slate 400 (Muted text) */
@@ -46,13 +48,19 @@
     --shadow-hover: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
 
     /* Border Radius */
-    --radius-card: 12px;
-    --radius-button: 8px;
-    --radius-input: 8px;
+    --radius-card: 24px;
+    --radius-button: 9999px;
+    /* Capsule */
+    --radius-input: 9999px;
+    /* Capsule */
 
     /* Spacing */
     --spacing-sidebar: 240px;
     --spacing-topbar-height: 64px;
+
+    /* Motion */
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @layer base {
@@ -174,36 +182,95 @@
 
 @layer components {
     .card {
-        @apply bg-(--color-bg-card) border border-(--color-border) shadow-[--shadow-card] rounded-[--radius-card];
+        @apply bg-(--color-bg-card) border border-(--color-border) shadow-[--shadow-card] backdrop-blur-sm relative overflow-hidden;
+        border-radius: 32px 4px 32px 4px;
+        /* Asymmetric Cyber Shape */
         /* Use correct BG variable */
     }
 
     .card-hover {
         @apply transition-all duration-300 hover:shadow-[--shadow-hover] hover:-translate-y-1;
+        transition-timing-function: var(--ease-spring);
     }
 
     .card-glow {
-        @apply transition-all duration-300 hover:border-(--color-primary)/50 hover:shadow-[0_0_20px_rgba(59, 130, 246, 0.15)] hover:bg-slate-800/80;
+        @apply transition-all duration-300 hover:border-(--color-primary)/50 hover:shadow-[0_0_20px_#3B82F626] hover:bg-slate-800/80;
+        transition-timing-function: var(--ease-spring);
+    }
+
+    /* ... existing code ... */
+    .btn-primary {
+        @apply inline-flex items-center justify-center bg-gradient-to-r from-(--color-primary) to-(--color-accent) hover:contrast-125 text-white font-medium px-6 py-2.5 rounded-[--radius-button] transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 focus:outline-hidden focus:ring-2 focus:ring-(--color-primary) focus:ring-offset-2 focus:ring-offset-(--color-bg-subtle) relative overflow-hidden;
+    }
+
+    .btn-primary::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+    }
+
+    .btn-primary:hover::after {
+        left: 100%;
+        transition: 0.5s;
     }
 
     .card-glow-purple {
-        @apply transition-all duration-300 hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168, 85, 247, 0.15)] hover:bg-slate-800/80;
+        @apply transition-all duration-300 hover:border-purple-500/50 hover:shadow-[0_0_20px_#A855F726] hover:bg-slate-800/80;
     }
 
     .card-glow-cyan {
-        @apply transition-all duration-300 hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(6, 182, 212, 0.15)] hover:bg-slate-800/80;
+        @apply transition-all duration-300 hover:border-cyan-500/50 hover:shadow-[0_0_20px_#06B6D426] hover:bg-slate-800/80;
     }
 
     .card-glow-emerald {
-        @apply transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16, 185, 129, 0.15)] hover:bg-slate-800/80;
+        @apply transition-all duration-300 hover:border-emerald-500/50 hover:shadow-[0_0_20px_#10B98126] hover:bg-slate-800/80;
     }
 
     .card-glow-amber {
-        @apply transition-all duration-300 hover:border-amber-500/50 hover:shadow-[0_0_20px_rgba(245, 158, 11, 0.15)] hover:bg-slate-800/80;
+        @apply transition-all duration-300 hover:border-amber-500/50 hover:shadow-[0_0_20px_#F59E0B26] hover:bg-slate-800/80;
     }
 
     .card-glow-rose {
-        @apply transition-all duration-300 hover:border-rose-500/50 hover:shadow-[0_0_20px_rgba(244, 63, 94, 0.15)] hover:bg-slate-800/80;
+        @apply transition-all duration-300 hover:border-rose-500/50 hover:shadow-[0_0_20px_#F43F5E26] hover:bg-slate-800/80;
+    }
+
+    /* Ambient Atmosphere */
+    .ambient-glow {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0.05) 40%, transparent 70%);
+        filter: blur(80px);
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+        animation: float 10s ease-in-out infinite;
+    }
+
+    .ambient-glow-secondary {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+        filter: blur(60px);
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+        animation: float 15s ease-in-out infinite reverse;
+    }
+
+    /* Text Gradients */
+    .text-gradient-purple {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500;
+    }
+
+    .text-gradient-cyan {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500;
     }
 
     /* Animation Utilities */

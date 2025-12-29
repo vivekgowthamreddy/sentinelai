@@ -20,7 +20,7 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="fixed left-0 top-0 h-screen w-[--spacing-sidebar] bg-(--color-bg-card) border-r border-(--color-border) flex flex-col overflow-hidden shadow-2xl z-50">
+        <div className="fixed left-0 top-0 h-screen w-[--spacing-sidebar] bg-(--color-bg-card) flex flex-col overflow-hidden shadow-2xl z-50 rounded-tr-[40px] rounded-br-[40px] border-r border-(--color-border)/50">
             {/* Logo */}
             <div className="p-6 border-b border-(--color-border) bg-(--color-bg-card)">
                 <div className="flex items-center gap-3">
@@ -41,8 +41,8 @@ const Sidebar = () => {
 
             {/* Navigation */}
             <div className="flex-1 min-h-0 overflow-hidden bg-(--color-bg-card)">
-                <nav className="h-full overflow-y-auto px-4 pb-20 pt-6 space-y-6 scrollbar-thin scrollbar-thumb-(--color-border) scrollbar-track-transparent">
-                    <ul className="space-y-1.5">
+                <nav className="h-full overflow-y-auto pb-20 pt-6 space-y-2 scrollbar-thin scrollbar-thumb-(--color-border) scrollbar-track-transparent">
+                    <ul className="space-y-1">
                         {navItems.map((item, idx) => {
                             const Icon = item.icon;
                             const active = isActive(item.path);
@@ -51,12 +51,12 @@ const Sidebar = () => {
                                 <li key={item.path} style={{ animationDelay: `${idx * 50}ms` }} className="animate-enter opacity-0 [animation-fill-mode:forwards]">
                                     <Link
                                         to={item.path}
-                                        className={`group flex items-center gap-3 px-4 py-3 rounded-[--radius-button] transition-all duration-200 relative overflow-hidden ${active
-                                            ? 'bg-blue-600/10 text-(--color-primary) shadow-sm ring-1 ring-blue-500/20'
-                                            : 'text-(--color-text-secondary) hover:bg-(--color-bg-subtle) hover:text-(--color-text-primary) hover:pl-5 hover:shadow-inner'
+                                        className={`group flex items-center gap-3 py-3 rounded-r-full rounded-l-none transition-all duration-300 relative overflow-hidden mr-3 ${active
+                                            ? 'bg-(--color-accent)/10 text-(--color-accent) pl-6 shadow-[4px_0_24px_-8px_rgba(139,92,246,0.5)] border-r-2 border-(--color-accent)/30'
+                                            : 'text-(--color-text-secondary) hover:bg-(--color-bg-subtle) pl-6 hover:pl-8 hover:text-(--color-text-primary)'
                                             }`}
                                     >
-                                        {active && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-(--color-primary) rounded-r-full" />}
+                                        {active && <div className="absolute left-0 top-0 bottom-0 w-1 bg-(--color-accent) shadow-[0_0_15px_rgba(139,92,246,0.8)]" />}
                                         <Icon className={`w-5 h-5 transition-transform duration-300 ${active ? 'scale-110' : 'group-hover:scale-110'}`} strokeWidth={active ? 2.5 : 2} />
                                         <span className={`text-sm ${active ? 'font-semibold tracking-wide' : 'font-medium'}`}>
                                             {item.label}

@@ -11,7 +11,7 @@ const ChildSafety = () => {
 
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         <div className="max-w-5xl mx-auto space-y-6 lg:space-y-8">
-          <div className="card p-6 sm:p-8">
+          <div className="card p-6 sm:p-8 animate-slide-up">
             <h2 className="text-lg font-semibold text-(--color-text-primary)">Overview</h2>
             <p className="text-sm text-(--color-text-secondary) mt-2 leading-relaxed">
               Use Child Safety tools to apply stricter screening for messages and links that may be shared with minors.
@@ -20,7 +20,7 @@ const ChildSafety = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="card p-6">
+            <div className="card p-6 animate-scale-in delay-100">
               <h3 className="text-sm font-medium text-(--color-text-secondary)">Recommended guardrails</h3>
               <ul className="mt-3 space-y-2">
                 <li className="text-sm text-(--color-text-primary)">Block unknown shortened links and file downloads.</li>
@@ -29,7 +29,7 @@ const ChildSafety = () => {
               </ul>
             </div>
 
-            <div className="card p-6">
+            <div className="card p-6 animate-scale-in delay-200">
               <h3 className="text-sm font-medium text-(--color-text-secondary)">Operational checklist</h3>
               <ul className="mt-3 space-y-2">
                 <li className="text-sm text-(--color-text-primary)">Enable content filtering and link reputation checks.</li>
@@ -39,7 +39,7 @@ const ChildSafety = () => {
             </div>
           </div>
 
-          <div className="card p-6">
+          <div className="card p-6 animate-slide-up delay-300">
             <h3 className="text-sm font-medium text-(--color-text-secondary)">Next step</h3>
             <p className="mt-2 text-sm text-(--color-text-primary) leading-relaxed">
               When backend support is connected, this area can trigger child-mode checks and show structured results.
