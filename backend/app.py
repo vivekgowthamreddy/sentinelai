@@ -29,6 +29,7 @@ from engine.risk_engine import analyze_risk
 from engine.password_strength import analyze_password
 from engine.nmap_scanner import run_nmap_scan
 from engine.defense_advisor import DefenseAdvisor
+from engine.defense_status import defense_state
 from models.schemas import AnalyzeRequest
 
 # -------------------------
@@ -146,6 +147,53 @@ def code_analyze(data: CodeAnalyzeRequest):
 def code_analyze_api(data: CodeAnalyzeRequest):
     return _analyze_code_snippet(data.code)
 
+@app.post("/defense/evolve")
+def evolve_defense():
+    defense_state.evolve()
+    return defense_state.get_status()
+
+@app.post("/api/defense/evolve")
+def evolve_defense_api():
+    defense_state.evolve()
+    return defense_state.get_status()
+
+class BrowserRequest(BaseModel):
+    url: str
+
+@app.post("/browser/navigate")
+def browser_navigate(data: BrowserRequest):
+    result = defense_state.check_url_access(data.url)
+    if not result["allowed"]:
+        return {
+            "status": "BLOCKED",
+            "message": "ACCESS DENIED BY SENTINEL IMMUNE SYSTEM",
+            "reason": result["reason"],
+            "consequences": result["consequences"],
+            "level": defense_state.evolution_level
+        }
+    return {
+        "status": "ALLOWED",
+        "content": f"Successfully loaded {data.url}",
+        "level": defense_state.evolution_level
+    }
+
+@app.post("/api/browser/navigate")
+def browser_navigate_api(data: BrowserRequest):
+    result = defense_state.check_url_access(data.url)
+    if not result["allowed"]:
+        return {
+            "status": "BLOCKED",
+            "message": "ACCESS DENIED BY SENTINEL IMMUNE SYSTEM",
+            "reason": result["reason"],
+            "consequences": result["consequences"],
+            "level": defense_state.evolution_level
+        }
+    return {
+        "status": "ALLOWED",
+        "content": f"Successfully loaded {data.url}",
+        "level": defense_state.evolution_level
+    }
+
 @app.post("/defense-plan")
 def defense_plan(data: DefenseRequest):
     return DefenseAdvisor.get_recommendations(data.model_dump())
@@ -153,6 +201,35 @@ def defense_plan(data: DefenseRequest):
 @app.post("/api/defense-plan")
 def defense_plan_api(data: DefenseRequest):
     return DefenseAdvisor.get_recommendations(data.model_dump())
+
+# -------------------------
+# DEFENSE PERSISTENCE
+# -------------------------
+@app.get("/defense/status")
+def get_defense_status():
+    return defense_state.get_status()
+
+@app.get("/api/defense/status")
+def get_defense_status_api():
+    return defense_state.get_status()
+
+@app.post("/defense/reset")
+def reset_defense():
+    defense_state.reset()
+    return {"status": "Defense System Reset to NORMAL"}
+
+@app.post("/api/defense/reset")
+def reset_defense_api():
+    defense_state.reset()
+    return {"status": "Defense System Reset to NORMAL"}
+
+@app.get("/defense/report")
+def get_defense_report():
+    return defense_state.get_report()
+
+@app.get("/api/defense/report")
+def get_defense_report_api():
+    return defense_state.get_report()
 
 @app.get("/api/system-health")
 def system_health():

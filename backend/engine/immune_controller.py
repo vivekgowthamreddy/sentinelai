@@ -1,4 +1,5 @@
 from engine.risk_engine import analyze_risk
+from engine.defense_status import defense_state
 
 def immune_controller(payload: dict):
     """
@@ -20,7 +21,7 @@ def immune_controller(payload: dict):
     )
 
     # 3️⃣ NEUTRALIZE (Policy-based)
-    immune_action = neutralize(result)
+    immune_action = neutralize(result, payload)
 
     # 4️⃣ REMEMBER (Append immune decision)
     result["immuneAction"] = immune_action
@@ -31,10 +32,26 @@ def immune_controller(payload: dict):
     return result
 
 
-def neutralize(result: dict):
+def neutralize(result: dict, payload: dict):
     risk = result["riskLevel"]
+    
+    # Check if system is already in ACTIVE_DEFENSE mode
+    current_status = defense_state.get_status()
+    if current_status["mode"] == "ACTIVE_DEFENSE":
+        return {
+            "mode": "ACTIVE_DEFENSE",
+            "actions": [
+                "SYSTEM_LOCKDOWN_ACTIVE",
+                "BLOCKING_UNAUTHORIZED_ACTIONS",
+                "REQUIRE_ADMIN_RESET"
+            ],
+            "note": "System is in persistent defense mode due to previous threat."
+        }
 
     if risk in ["HIGH", "CRITICAL"]:
+        # TRIGGER PERSISTENT DEFENSE
+        defense_state.trigger_defense(payload, trigger_reason=f"Risk Level: {risk}")
+        
         return {
             "mode": "ACTIVE_DEFENSE",
             "actions": [

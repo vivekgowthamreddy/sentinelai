@@ -85,5 +85,31 @@ export const codeAnalyze = async (code: string, language?: string) => {
   return data;
 };
 
+// Defense System Persistence
+export const getDefenseStatus = async () => {
+  const res = await api.get("/defense/status");
+  return res.data;
+};
+
+export const resetDefense = async () => {
+  const res = await api.post("/defense/reset", {});
+  return res.data;
+};
+
+export const getDefenseReport = async () => {
+  const res = await api.get("/defense/report");
+  return res.data;
+};
+
+export const evolveDefense = async () => {
+  const res = await api.post("/defense/evolve", {});
+  return res.data;
+};
+
+export const browserNavigate = async (url: string) => {
+  const res = await api.post("/browser/navigate", { url });
+  return res.data;
+};
+
 // Export types for use in components
 export type { PasswordCheckResponse, PortScanResult, CodeAnalysisResponse };

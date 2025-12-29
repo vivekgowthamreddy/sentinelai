@@ -9,6 +9,7 @@ import ChildSafety from './pages/ChildSafety';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import FutureDefense from './pages/FutureDefense';
+import SecureBrowserMock from './pages/SecureBrowserMock';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/reports" element={<Reports />} />
                     <Route path="/settings" element={<Settings />} />
                     <Route path="/future-defense" element={<FutureDefense />} />
+                    <Route path="/secure-browser" element={<SecureBrowserMock />} />
                 </Routes>
             </MainLayout>
         </BrowserRouter>
